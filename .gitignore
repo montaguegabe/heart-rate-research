@@ -1,3 +1,9 @@
 # Data should not be checked
-data-raw/*
 data/*
+
+# Neither should athlete names
+dataset.mat
+
+# No backup files
+*.m~
+
