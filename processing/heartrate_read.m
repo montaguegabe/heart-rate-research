@@ -1,8 +1,8 @@
 function [data] = heartrate_read(day, athlete, type)
 
-    % Unnormalized by default
+    % Default
     if nargin < 3
-        type = 'processed';
+        type = 'processed_norm';
     end
 
     % Transform day and athlete into heart rate
