@@ -1,9 +1,4 @@
 function heartrate_write(signal, day, athlete, type)
-
-    % Unnormalized by default
-    if nargin < 3
-        type = 'processed';
-    end
     
     % Transform day and athlete into heart rate
     load('data/meta.mat', 'athletes', 'NUM_ATHLETES', 'NUM_DAYS');

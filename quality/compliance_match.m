@@ -3,14 +3,13 @@
 % underestimates.
 
 function [output] = compliance_match(day1, athlete1, day2, athlete2)
-
     % day1 = 4; day2 = 4; athlete1 = 9; athlete2 = 6;
 
     load('data/meta.mat', 'WINDOW_SAMPLES');
 
     % Read both windows
-    minutes1 = heartrate_read(day1, athlete1, 'compliance');
-    minutes2 = heartrate_read(day2, athlete2, 'compliance');
+    minutes1 = get_window(day1, athlete1, 'comp');
+    minutes2 = get_window(day2, athlete2, 'comp');
 
     common = intersect(minutes1, minutes2);
 

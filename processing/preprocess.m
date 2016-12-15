@@ -68,7 +68,7 @@ end
 
 save('data/raw_moments.mat', 'moments_mean', 'moments_std');
 
-%% Preprocesses data and saves as .MAT
+%% Preprocesses data and saves to disk
 
 % Load mapping from index to name
 load('data/meta.mat', 'athletes', 'NUM_ATHLETES', 'NUM_DAYS', 'WINDOW_SAMPLES');
@@ -90,7 +90,31 @@ for day = 1:NUM_DAYS
 
             % Fill holes
             x_query = linspace(1, WINDOW_SAMPLES, WINDOW_SAMPLES);
-            hr_ts_noisy = interp1(mins, hrs, x_query, 'linear', 'extrap');
+            hr_ts_noisy = interp1(mins, hrs, x_query, 'linear');
+            
+            % Extrapolate ends constant
+            first_hr = hrs(1);
+            last_hr = hrs(end);
+            
+            % Start
+            sample = 1;
+            sample_value = hr_ts_noisy(sample);
+            while isnan(sample_value)
+     
+                hr_ts_noisy(sample) = first_hr;
+                sample = sample + 1;
+                sample_value = hr_ts_noisy(sample);
+            end
+            
+            % End
+            sample = WINDOW_SAMPLES;
+            sample_value = hr_ts_noisy(sample);
+            while isnan(sample_value)
+     
+                hr_ts_noisy(sample) = last_hr;
+                sample = sample - 1;
+                sample_value = hr_ts_noisy(sample);
+            end
 
             % Noise reduce with Wavelets
             hr_ts = wden(hr_ts_noisy, 'sqtwolog', 's', 'sln', 5, 'haar');

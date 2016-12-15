@@ -1,13 +1,8 @@
 function [data] = heartrate_read(day, athlete, type)
 
-    % Default
-    if nargin < 3
-        type = 'processed_norm';
-    end
-
     % Transform day and athlete into heart rate
-    load('data/meta.mat', 'athletes', 'NUM_ATHLETES', 'NUM_DAYS');
-
+    load('data/meta.mat', 'athletes', 'NUM_ATHLETES', 'NUM_DAYS', 'WINDOW_SAMPLES');
+    
     name = athletes(athlete);
     date = datetime(2016, 9, 13) + days(day - 1);
     date_string = datestr(date, 'mm-dd-YYYY');
