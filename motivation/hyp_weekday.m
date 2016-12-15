@@ -52,10 +52,10 @@ clc; figure;
 
 subplot(2,1,1);
 
-values1 = dists_same_weekday(:,1);
-values1(isinf(values1)) = 0;
-weights1 = dists_same_weekday(:,2);
-[histw1, intervals] = histwc(values1, weights1, 100);
+x1 = dists_same_weekday(:,1);
+x1(isinf(x1)) = 0;
+w1 = dists_same_weekday(:,2);
+[histw1, intervals] = histwc(x1, w1, 100);
 bar(intervals, histw1, 1,'FaceColor',[0,0,1],...
                      'EdgeColor',[0,0,1]);
 axis([50, 1400, 0, 500 / 7]);
@@ -63,10 +63,10 @@ title('Difference distribution between same weekdays.')
 
                  
 subplot(2,1,2);
-values1 = dists_dif_weekday(:,1);
-values1(isinf(values1)) = 0;
-weights1 = dists_dif_weekday(:,2);
-[histw2, intervals] = histwc(values1, weights1, 100);
+x1 = dists_dif_weekday(:,1);
+x1(isinf(x1)) = 0;
+w1 = dists_dif_weekday(:,2);
+[histw2, intervals] = histwc(x1, w1, 100);
 bar(intervals, histw2, 1,'FaceColor',[0,0.6,0],...
                      'EdgeColor',[0,0.6,0]);
 axis([50, 1400, 0, 500]);
@@ -76,26 +76,37 @@ title('Difference distribution different weekdays.')
 
 load('motivation/hyp_weekday.mat', 'dists_same_weekday', 'dists_dif_weekday');
 
-values1 = dists_same_weekday(:,1);
-values1(isinf(values1)) = 0;
-weights1 = dists_same_weekday(:,2);
-mean_same_weekday = sum(values1 .* weights1) / sum(weights1);
-std_same_weekday = sqrt(var(values1, weights1));
+% Gather sample moments (weighted)
+x1 = dists_same_weekday(:,1);
+x1(isinf(x1)) = 0;
+n1 = size(x1, 1);
+w1 = dists_same_weekday(:,2);
+w1 = w1 / sum(w1) * n1;
 
-values2 = dists_dif_weekday(:,1);
-values2(isinf(values2)) = 0;
-weights2 = dists_dif_weekday(:,2);
-mean_dif_weekday = sum(values2 .* weights2) / sum(weights2);
-std_dif_weekday = sqrt(var(values2, weights2));
+m1 = sum(x1 .* w1) / sum(w1);
+s1 = nanvar(x1, w1, 1);
 
-mean_same_weekday
-std_same_weekday
+x2 = dists_dif_weekday(:,1);
+x2(isinf(x2)) = 0;
+n2 = size(x2, 1);
+w2 = dists_dif_weekday(:,2);
+w2 = w2 / sum(w2) * n2;
 
-mean_dif_weekday
-std_dif_weekday
+m2 = sum(x2 .* w2) / sum(w2);
+s2 = nanvar(x2, w2, 1);
 
-% h = 1 signifies null hypothesis rejected at 5%
-[h,p] = ttest2(values1, values2)
+% Perform a 2-sample T test on the datasets
+stat = (m1 - m2) ./ sqrt((s1 .^ 2) ./ n1 + (s2 .^ 2) ./ n2);
+numer = (((s1 .^ 2) ./ n1 + (s2 .^ 2) ./ n2) .^ 2);
+denom = (((s1 .^ 2) ./ n1) .^ 2) ./ (n1 - 1) + ...
+        (((s2 .^ 2) ./ n2) .^ 2) ./ (n2 - 1);
+dfe = numer ./ denom;
+
+p = tcdf(stat,dfe)
+mean_same = m1
+mean_different = m2
+var_same = s1
+var_different = s2
 
 %% Visualization of similarities
 

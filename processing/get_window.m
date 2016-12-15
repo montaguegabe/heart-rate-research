@@ -2,12 +2,12 @@ function [output] = get_window(day, athlete, type)
 
     % Default type used
     if nargin < 3
-        type = 'n';
+        type = 'p';
     end
 
-    processed = evalin('base','eval(''processed'',''defaultVar'')');
-    processed_norm = evalin('base','eval(''processed_norm'',''defaultVar'')');
-    compliances = evalin('base','eval(''compliances'',''defaultVar'')');
+    processed = evalin('base','eval(''processed'',''dataset_not_loaded'')');
+    processed_norm = evalin('base','eval(''processed_norm'',''dataset_not_loaded'')');
+    compliances = evalin('base','eval(''compliances'',''dataset_not_loaded'')');
 
     switch type
         case {'p', 'processed'}

@@ -6,7 +6,7 @@ load('data/meta.mat', 'NUM_ATHLETES', 'NUM_DAYS', 'WINDOW_SAMPLES');
 dists_same_ident = []; % [dist, conf; dist, conf; etc]
 dists_dif_ident = [];
 
-TRIALS = 100;
+TRIALS = 200;
 
 for trial = 1:TRIALS
 
@@ -41,11 +41,12 @@ save('motivation/hyp_identity.mat', 'dists_same_ident', 'dists_dif_ident');
 %% Plot distribution of similarities
 
 load('motivation/hyp_identity.mat', 'dists_same_ident', 'dists_dif_ident');
+load('data/meta.mat', 'NUM_ATHLETES', 'NUM_DAYS', 'WINDOW_SAMPLES');
 
 % Plot
 clc; figure;
 
-VERT_SCALE = 300;
+VERT_SCALE = 1000;
 
 subplot(2,1,1);
 
@@ -73,25 +74,36 @@ title('Difference distribution different identities.')
 
 load('motivation/hyp_identity.mat', 'dists_same_ident', 'dists_dif_ident');
 
-values1 = dists_same_ident(:,1);
-values1(isinf(values1)) = 0;
-weights1 = dists_same_ident(:,2);
-mean_same_ident = sum(values1 .* weights1) / sum(weights1);
-std_same_ident = sqrt(var(values1, weights1));
+% Gather sample moments (weighted)
+x1 = dists_same_ident(:,1);
+x1(isinf(x1)) = 0;
+n1 = size(x1, 1);
+w1 = dists_same_ident(:,2);
+w1 = w1 / sum(w1) * n1;
 
-values2 = dists_dif_ident(:,1);
-values2(isinf(values2)) = 0;
-weights2 = dists_dif_ident(:,2);
-mean_dif_ident = sum(values2 .* weights2) / sum(weights2);
-std_dif_ident = sqrt(var(values2, weights2));
+m1 = sum(x1 .* w1) / sum(w1);
+s1 = nanvar(x1, w1, 1);
 
-mean_same_ident
-std_same_ident
+x2 = dists_dif_ident(:,1);
+x2(isinf(x2)) = 0;
+n2 = size(x2, 1);
+w2 = dists_dif_ident(:,2);
+w2 = w2 / sum(w2) * n2;
 
-mean_dif_ident
-std_dif_ident
+m2 = sum(x2 .* w2) / sum(w2);
+s2 = nanvar(x2, w2, 1);
 
-% h = 1 signifies null hypothesis rejected at 5%
-[h,p] = ttest2(values1, values2)
+% Perform a 2-sample T test on the datasets
+stat = (m1 - m2) ./ sqrt((s1 .^ 2) ./ n1 + (s2 .^ 2) ./ n2);
+numer = (((s1 .^ 2) ./ n1 + (s2 .^ 2) ./ n2) .^ 2);
+denom = (((s1 .^ 2) ./ n1) .^ 2) ./ (n1 - 1) + ...
+        (((s2 .^ 2) ./ n2) .^ 2) ./ (n2 - 1);
+dfe = numer ./ denom;
+
+p = tcdf(stat,dfe)
+mean_same = m1
+mean_different = m2
+var_same = s1
+var_different = s2
 
 

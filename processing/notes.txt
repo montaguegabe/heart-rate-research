@@ -1,3 +1,49 @@
 PROCESSING DECISION NOTES
 
-Normalization: 
+== NORMALIZATION: PER WINDOW ==
+WEEKDAY HYPOTHESIS (Athletes 6 and 7):
+p=0.4743
+mean_same=353.0456
+mean_different=380.6239
+var_same=1.3361e+04
+var_different=1.3000e+04
+
+IDENTITY HYPOTHESIS (200 trials):
+p=0.4414
+mean_same=421.0390
+mean_different=461.0029
+var_same=1.1509e+04
+var_different=1.1347e+04
+
+
+== NORMALIZATION: PER ATHLETE ==
+WEEKDAY HYPOTHESIS
+p=0.4743
+mean_same=353.0456
+mean_different=380.6239
+var_same=1.3361e+04
+var_different=1.3000e+04
+
+IDENTITY HYPOTHESIS
+p=0.4516
+mean_same=382.7449
+mean_different=417.4920
+var_same=1.2154e+04
+var_different=1.1792e+04
+
+== NORMALIZATION: NONE ==
+WEEKDAY HYPOTHESIS
+p=0.4743
+mean_same=353.0456
+mean_different=380.6239
+var_same=1.3361e+04
+var_different=1.3000e+04
+
+IDENTITY HYPOTHESIS
+p=0.4951
+mean_same=1.0079e+04
+mean_different=1.2657e+04
+var_same=8.1403e+06
+var_different=1.3621e+07
+
+
