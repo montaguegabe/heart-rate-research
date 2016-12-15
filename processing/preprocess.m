@@ -127,8 +127,8 @@ for day = 1:NUM_DAYS
         else
             
             % No data for the whole day.
-            hr_ts = [];
-            hr_ts_norm = [];
+            hr_ts = ones(1, WINDOW_SAMPLES) * moments_mean(athlete);
+            hr_ts_norm = zeros(1, WINDOW_SAMPLES);
             mins = [];
         
         end

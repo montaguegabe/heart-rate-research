@@ -14,12 +14,8 @@ function [output, weight] = day_dist(day1, athlete1, day2, athlete2)
     ts1 = get_window(day1, athlete1);
     ts2 = get_window(day2, athlete2);
     
-    if weight ~= 0
-        %[dist, i1, i2] = dtw(ts1, ts2);
-        dist = dtw(ts1, ts2);
-    else
-        dist = Inf;
-    end
+    dist = dtw(ts1, ts2);
+    
     %{
     clc;
     hold on
