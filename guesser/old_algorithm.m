@@ -5,11 +5,13 @@
 
 load('data/meta.mat', 'athletes', 'NUM_ATHLETES');
 
-MINIMUM_SAMPLE_DAYS = 21;
+%MINIMUM_SAMPLE_DAYS = 31;
+SAMPLE_DAYS = 24;
+GAP = 1;
 WEEKDAY_PREFERENCE = 1.2;
 HOLE_PENALTY = 1.1;
 
-days = 28;
+days = 33;
 subjects = NUM_ATHLETES;
 
 % Stats for trial
@@ -18,14 +20,14 @@ tries;
 guess_number; % Array of n where observed subject was the nth guess.
 subject_holes;
 
-for trialnum=1:200
+for trialnum=1:1000
 
 subject = 1;
 is_blank = true;
 while is_blank
 
     subject = randi([1, subjects]);
-    observation = randi([MINIMUM_SAMPLE_DAYS, days]);
+    observation = randi([SAMPLE_DAYS + 1 + GAP, days]);
     
     compliance = get_window(observation, subject, 'c');
     is_blank = size(compliance, 1) == 0;
@@ -36,7 +38,7 @@ end
 % Situation: We have all samples up to the day of the observation, but we
 % do not know the subject the sample came from.
 
-sample_days = (observation - 1);
+%SAMPLE_DAYS =  %(observation - 1);
 trials = zeros(subjects, 1);
 trial_holes = zeros(subjects, 1);
 
@@ -48,7 +50,7 @@ for trial_subject = 1:subjects
     holes = 0;
     weighted_holes = 0;
     
-    for trial_day = 1:sample_days
+    for trial_day = 1:SAMPLE_DAYS
         
         % Weight similarities on weekdays that are the same
         weight = 1.0;
@@ -71,7 +73,7 @@ for trial_subject = 1:subjects
     end
     
     % Correct for holes
-    avg_day_dist = dist_tot / (sample_days - holes);
+    avg_day_dist = dist_tot / (SAMPLE_DAYS - holes);
     weighted_dist_tot = weighted_dist_tot + HOLE_PENALTY * avg_day_dist * ((holes - weighted_holes) + weighted_holes * WEEKDAY_PREFERENCE);
     
     % Trial complete
@@ -120,6 +122,8 @@ subject_athlete = [subject_athlete; subject];
 end
 
 %% Results plot accuracy distribution
+
+subjects = 10;
 
 P_correct = zeros(1, 9);
 
